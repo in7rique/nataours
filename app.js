@@ -1,17 +1,32 @@
+const fs = require('fs');
 const express = require('express');
+const morgan = require('morgan');
 
+const tourRouter = require('./routes/tourRoutes');
+const userRouter = require('./routes/userRoutes');
+
+const exp = require('constants');
 const app = express();
 
+// 1) MIDDLEWARES
+app.use(morgan('dev'));
+
+app.use(express.json());
+
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
+  next();
+});
+
+//2) ROUTE HANDlERS
+
+// 3) ROUTES
+
+// 4) START SERVER
 const port = 3000;
-
-app.get('/', (req, res) => {
-  res.status(200).json({ message: 'Hello from server side!', app: 'Natours' });
-});
-
-app.post('/', (req, res) => {
-  res.send('You can post to this endpoit...');
-});
-
 app.listen(port, () => {
   console.log(`App running on port ${port}...`);
 });
+
+app.use('/api/v1/tours', tourRouter);
+app.use('/api/v1/users', userRouter);
